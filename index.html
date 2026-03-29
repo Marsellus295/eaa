@@ -1140,7 +1140,7 @@ function setLoading(on) {
 async function runAnalysis(url) {
   hideError();
   setLoading(true);
-  document.getElementById('loading-section').style.display = '';
+  document.getElementById('loading-section').style.display = 'block';
   document.getElementById('results-section').style.display = 'none';
   document.getElementById('loading-section').scrollIntoView({ behavior: 'smooth', block: 'center' });
 
@@ -1154,7 +1154,7 @@ async function runAnalysis(url) {
     renderScore(data);
     renderChecks(data);
     document.getElementById('loading-section').style.display = 'none';
-    document.getElementById('results-section').style.display = '';
+    document.getElementById('results-section').style.display = 'block';
     document.getElementById('results-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
   } catch (err) {
     document.getElementById('loading-section').style.display = 'none';
