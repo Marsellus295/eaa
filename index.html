@@ -584,8 +584,6 @@
     </a>
     <span class="nav-tagline">Kontrola souladu s Evropským zákonem o přístupnosti</span>
     <div class="nav-actions">
-      <a href="https://eaa.pliki.ai/api-docs" target="_blank" class="btn-outline">&lt;/&gt; API Docs</a>
-      <a href="https://analysis.ie/demos" target="_blank" class="btn-outline teal">produced by Analysis Cloud</a>
     </div>
   </div>
 </nav>
@@ -633,15 +631,6 @@
     </div>
   </div>
 
-  <!-- RECENTLY ANALYZED -->
-  <div class="card recent-card" id="recent-card">
-    <div class="card-header">
-      <span class="icon">🕐</span>
-      Nedávno analyzované adresy
-    </div>
-    <div id="recent-list" class="recent-list"></div>
-    <div id="recent-count" class="recent-count"></div>
-  </div>
 
   <!-- LOADING -->
   <div id="loading-section" role="status" aria-live="polite">
@@ -710,15 +699,7 @@
       <div id="checks-list" class="checks-list"></div>
     </div>
 
-    <!-- RECENT (bottom) -->
-    <div class="card recent-card" id="recent-card-bottom">
-      <div class="card-header">
-        <span class="icon">🕐</span>
-        Nedávno analyzované adresy
-      </div>
-      <div id="recent-list-bottom" class="recent-list"></div>
-      <div id="recent-count-bottom" class="recent-count"></div>
-    </div>
+
 
   </div><!-- /results-section -->
 
@@ -760,38 +741,11 @@
       ℹ️ Tento nástroj poskytuje automatizovanou kontrolu přístupnosti dle směrnic WCAG 2.1 AA ve shodě s Evropským zákonem o přístupnosti.
     </div>
     <div class="footer-right">
-      <div class="footer-stat">📅 Termín EAA: 28. června 2025</div>
-      <div class="footer-stat" id="visitor-stat">👥 Celkem návštěvníků: —</div>
-      <div class="footer-actions">
-        <a href="https://eaa.pliki.ai/api-docs" target="_blank" class="btn-outline">&lt;/&gt; API Docs</a>
-        <a href="https://analysis.ie/demos" target="_blank" class="btn-outline teal">produced by Analysis Cloud</a>
-      </div>
+      <div class="footer-stat">📅 Datum testu: <span id="current-date-time">—</span></div>
     </div>
   </div>
 </footer>
 
-<!-- HELP BUTTON -->
-<button id="help-btn" aria-label="Nápověda – informace o souladu s EAA">?</button>
-
-<!-- HELP MODAL -->
-<div class="modal-overlay" id="help-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-  <div class="modal">
-    <button class="close-btn" id="modal-close" aria-label="Zavřít">✕</button>
-    <h2 id="modal-title">Co je Evropský zákon o přístupnosti?</h2>
-    <p>
-      <strong>Evropský zákon o přístupnosti (EAA)</strong> – směrnice EU 2019/882 – vyžaduje, aby produkty a digitální služby byly přístupné pro osoby se zdravotním postižením.
-    </p>
-    <p>
-      Termín splnění pro poskytovatele digitálních služeb je <strong>28. června 2025</strong>. Nesplnění požadavků může vést k regulačním sankcím.
-    </p>
-    <p>
-      Tento nástroj automatizovaně kontroluje váš web dle standardů <strong>WCAG 2.1 AA</strong>, které jsou základem pro soulad s EAA.
-    </p>
-    <p style="margin-bottom:0">
-      <a href="https://eur-lex.europa.eu/eli/dir/2019/882/oj" target="_blank" rel="noopener" style="color:var(--accent-teal)">Přečíst celý text EAA ↗</a>
-    </p>
-  </div>
-</div>
 
 <script>
 // ─── Czech translations ───────────────────────────────────────────────────────
@@ -1004,7 +958,7 @@ function pickUrl(url) {
 
 // ─── Render Results ───────────────────────────────────────────────────────────
 function renderScore(data) {
-  const score = data.overall_score ?? 0;
+  const score = Math.round(data.overall_score ?? 0);
   const ck = getComplianceKey(data.summary?.compliance_level);
   const info = COMPLIANCE_LABELS[ck];
 
@@ -1067,7 +1021,7 @@ function renderChecks(data) {
   items.forEach(({ key, check }, idx) => {
     const passed = check.passed;
     const isNA   = passed === null || passed === undefined;
-    const score  = check.score;
+    const score  = check.score != null ? Math.round(check.score) : null;
     const scoreNA = score === null || score === undefined;
 
     const statusClass = isNA ? 'na' : (passed ? 'pass' : 'fail');
@@ -1150,12 +1104,12 @@ async function runAnalysis(url) {
       throw new Error(data.message || 'Neznámá chyba při analýze');
     }
     addRecent(url);
-    renderAllRecentLists();
     renderScore(data);
     renderChecks(data);
     document.getElementById('loading-section').style.display = 'none';
     document.getElementById('results-section').style.display = 'block';
     document.getElementById('results-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    updateDateTime();
   } catch (err) {
     document.getElementById('loading-section').style.display = 'none';
     showError(`Chyba při analýze: ${err.message}`);
@@ -1175,18 +1129,18 @@ document.getElementById('url-input').addEventListener('keydown', e => {
   if (e.key === 'Enter') document.getElementById('analyze-btn').click();
 });
 
-document.getElementById('help-btn').addEventListener('click', () => {
-  document.getElementById('help-modal').classList.add('open');
-});
-document.getElementById('modal-close').addEventListener('click', () => {
-  document.getElementById('help-modal').classList.remove('open');
-});
-document.getElementById('help-modal').addEventListener('click', e => {
-  if (e.target === e.currentTarget) e.currentTarget.classList.remove('open');
-});
-
 // ─── Init ─────────────────────────────────────────────────────────────────────
-renderAllRecentLists();
+function updateDateTime() {
+  const now = new Date();
+  const d = String(now.getDate()).padStart(2, '0');
+  const m = String(now.getMonth() + 1).padStart(2, '0');
+  const y = now.getFullYear();
+  const hr = String(now.getHours()).padStart(2, '0');
+  const mn = String(now.getMinutes()).padStart(2, '0');
+  const dtEl = document.getElementById('current-date-time');
+  if (dtEl) dtEl.textContent = `${d}.${m}.${y} ${hr}:${mn}`;
+}
+
 </script>
 </body>
 </html>
