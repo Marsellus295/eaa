@@ -1131,8 +1131,8 @@
   <footer>
     <div class="footer-inner">
       <div class="footer-left">
-        ℹ️ Tento nástroj poskytuje automatizovanou kontrolu přístupnosti dle směrnic WCAG 2.1 AA ve shodě se Směrnicí
-        EPaR (EU) 2019/882 o&nbsp;požadavcích na&nbsp;přístupnost.
+        <span>ℹ️ Tento nástroj poskytuje automatizovanou kontrolu přístupnosti dle směrnic WCAG 2.1 AA ve shodě se Směrnicí
+        EPaR (EU) 2019/882 o&nbsp;požadavcích na&nbsp;přístupnost. <span style="opacity: 0.7; margin-left: 4px;">| Verze: <span id="app-version"></span></span></span>
       </div>
       <div class="footer-right">
         <div class="footer-stat">📅 Datum testu: <span id="current-date-time">—</span></div>
@@ -1142,6 +1142,8 @@
 
 
   <script>
+    const APP_VERSION = '1.0.1'; // Zde můžete jednoduše změnit číslo verze / sestavení
+
     // ─── Czech translations ───────────────────────────────────────────────────────
     const CHECK_NAMES = {
       images: 'Alternativní texty obrázků',
@@ -1524,6 +1526,8 @@
     });
 
     // ─── Init ─────────────────────────────────────────────────────────────────────
+    document.getElementById('app-version').textContent = APP_VERSION;
+
     function updateDateTime() {
       const now = new Date();
       const d = String(now.getDate()).padStart(2, '0');
