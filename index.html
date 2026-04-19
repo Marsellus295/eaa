@@ -971,13 +971,13 @@
   <nav>
     <div class="nav-inner">
       <a href="#" class="nav-logo">
-        <img src="coi_logo.png" alt="ČOI - Česká obchodní inspekce" style="height:42px; object-fit:contain;" />
-        <span>EAA přístupnost</span>
+        <img src="favicon.png" alt="R3M Logo"
+          style="width:36px; height:36px; border-radius:8px; object-fit:cover; box-shadow: 0 4px 12px rgba(0,0,0,0.2);" />
+        <span>EAA přístupnost <span style="font-weight: 400;">by R3M</span></span>
       </a>
       <span class="nav-tagline">Kontrola souladu webu se Směrnicí EPaR (EU) 2019/882 o&nbsp;požadavcích
         na&nbsp;přístupnost</span>
       <div class="nav-actions">
-        <span style="border: 1px solid var(--border); padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; color: var(--text-muted);">Verze 1.0.1</span>
       </div>
     </div>
   </nav>
@@ -1131,8 +1131,8 @@
   <footer>
     <div class="footer-inner">
       <div class="footer-left">
-        <span>ℹ️ Tento nástroj poskytuje automatizovanou kontrolu přístupnosti dle směrnic WCAG 2.1 AA ve shodě se Směrnicí
-        EPaR (EU) 2019/882 o&nbsp;požadavcích na&nbsp;přístupnost. <span style="opacity: 0.7; margin-left: 4px;">| Verze: <span id="app-version">1.0.1</span></span></span>
+        ℹ️ Tento nástroj poskytuje automatizovanou kontrolu přístupnosti dle směrnic WCAG 2.1 AA ve shodě se Směrnicí
+        EPaR (EU) 2019/882 o&nbsp;požadavcích na&nbsp;přístupnost.
       </div>
       <div class="footer-right">
         <div class="footer-stat">📅 Datum testu: <span id="current-date-time">—</span></div>
@@ -1142,8 +1142,6 @@
 
 
   <script>
-    const APP_VERSION = '1.0.1'; // Zde můžete jednoduše změnit číslo verze / sestavení
-    
     // ─── Czech translations ───────────────────────────────────────────────────────
     const CHECK_NAMES = {
       images: 'Alternativní texty obrázků',
@@ -1156,8 +1154,6 @@
       semantic_markup: 'Sémantické značkování',
       keyboard_navigation: 'Klávesová navigace',
       page_structure: 'Struktura stránky',
-      contrast: 'Kontrast barev',
-      labels: 'Popisky a visačky',
     };
 
     const COMPLIANCE_LABELS = {
@@ -1207,93 +1203,22 @@
       'has_lang': 'Atribut jazyka',
       'has_meta_description': 'Meta popis',
       'has_title': 'Titulek stránky',
-      // generic & axe
-      'impact': 'Závažnost',
-      'severity': 'Závažnost',
-      'description': 'Popis',
-      'element': 'Prvek',
-      'context': 'Kontext',
-      'selector': 'Selektor',
-      'source': 'Zdroj',
-      'remediation': 'Doporučení',
-      'help': 'Nápověda',
-      'url': 'URL adresa',
-      'path': 'Cesta',
-      'id': 'ID atribut',
-      'role': 'Aria role',
-      'passed': 'Splněno',
-      'failed': 'Nesplněno',
-      'score': 'Skóre',
-      'count': 'Počet',
-      'total': 'Celkem',
+      // generic
       'true': 'Ano',
       'false': 'Ne',
     };
 
-    const VALUE_TRANSLATIONS = {
-      // Impact levels
-      'critical': 'kritická',
-      'serious': 'závažná',
-      'moderate': 'střední',
-      'minor': 'nízká',
-      // Roles & Landmarks
-      'main': 'hlavní obsah',
-      'nav': 'navigace',
-      'navigation': 'navigace',
-      'footer': 'patička webu',
-      'header': 'hlavička webu',
-      'aside': 'postranní panel',
-      'region': 'oblast',
-      'form': 'formulář',
-      'search': 'vyhledávání',
-      'banner': 'banner',
-      'contentinfo': 'patička (contentinfo)',
-      'complementary': 'doplňkový obsah',
-      'application': 'aplikace',
-      'article': 'článek',
-      'img': 'obrázek',
-      'button': 'tlačítko',
-      'link': 'odkaz',
-    };
-
-    const MESSAGE_TRANSLATIONS = {
-      'Form elements must have labels': 'Formulářové prvky musí mít popisky (label).',
-      'Images must have alternate text': 'Obrázky musí mít alternativní text (atribut alt).',
-      'All page content must be contained by landmarks': 'Veškerý obsah stránky by měl být umístěn v orientačních bodech (landmarks).',
-      'Page must contain a level-one heading': 'Stránka musí obsahovat alespoň jeden nadpis úrovně 1 (h1).',
-      'Links must have discernible text': 'Odkazy musí obsahovat srozumitelný text.',
-      'Headings must be in a logical order': 'Nadpisy musí být v logickém pořadí.',
-      'Documents must have a lang attribute': 'Dokument musí mít definovaný atribut jazyka (lang).',
-      'Buttons must have discernible text': 'Tlačítka musí mít srozumitelný text.',
-      'Elements must have sufficient color contrast': 'Prvky musí mít dostatečný barevný kontrast.',
-      'ID attribute values must be unique': 'Hodnoty atributu ID musí být na stránce unikátní.',
-      'Aria roles must have all required attributes': 'ARIA role musí mít všechny povinné atributy.',
-      'HTML elements must be nested correctly': 'HTML elementy musí být správně vnořeny.',
-      'Frames must have a title attribute': 'Rámy (iframes) musí mít atribut title.',
-    };
-
     function translateDetail(key, value) {
-      const kLower = key.toLowerCase().replace(/[- ]/g, '_');
+      const kLower = key.toLowerCase().replace(/ /g, '_');
       const tKey = DETAIL_TRANSLATIONS[kLower] || toTitleCase(key.replace(/_/g, ' '));
       let tVal = value;
-
-      const translateVal = (v) => {
-        if (typeof v !== 'string') return v;
-        const vLower = v.toLowerCase().trim();
-        const vNorm = vLower.replace(/[-_ ]/g, '');
-        return VALUE_TRANSLATIONS[vNorm] || VALUE_TRANSLATIONS[vLower] || v;
-      };
-
       if (typeof value === 'boolean') tVal = value ? 'Ano' : 'Ne';
-      else if (Array.isArray(value)) {
-        tVal = value.length === 0 ? 'žádné' : value.map(v => translateVal(v)).join(', ');
-      }
+      else if (Array.isArray(value)) tVal = value.length === 0 ? 'žádné' : value.join(', ');
       else if (value === null || value === undefined) tVal = 'N/A';
       else if (typeof value === 'string') {
-        const vLower = value.toLowerCase().trim();
-        if (vLower === 'true') tVal = 'Ano';
-        else if (vLower === 'false') tVal = 'Ne';
-        else tVal = translateVal(value);
+        if (value.toLowerCase() === 'true') tVal = 'Ano';
+        else if (value.toLowerCase() === 'false') tVal = 'Ne';
+        else tVal = value;
       }
       return { key: tKey, value: tVal };
     }
@@ -1465,10 +1390,7 @@
       const pTags = document.getElementById('priority-tags');
       if (issues.length > 0) {
         pBox.style.display = '';
-        pTags.innerHTML = issues.map(i => {
-          const trans = CHECK_NAMES[i.toLowerCase().replace(/-/g, '_')] || toTitleCase(i.replace(/_/g, ' '));
-          return `<span class="priority-tag">${trans}</span>`;
-        }).join('');
+        pTags.innerHTML = issues.map(i => `<span class="priority-tag">${i}</span>`).join('');
       } else {
         pBox.style.display = 'none';
       }
@@ -1501,11 +1423,9 @@
         const badgeClass = isNA ? 'na' : (passed ? 'pass' : 'fail');
         const badgeText = scoreNA ? 'N/A' : `${score}%`;
 
-        const normKey = key.toLowerCase().replace(/-/g, '_');
-        const name = CHECK_NAMES[normKey] || check.name || toTitleCase(key.replace(/_/g, ' '));
+        const name = CHECK_NAMES[key] || check.name || toTitleCase(key.replace(/_/g, ' '));
         const wcag = check.wcag_reference || '';
-        const messageRaw = check.message || '';
-        const message = MESSAGE_TRANSLATIONS[messageRaw] || messageRaw;
+        const message = check.message || '';
 
         // Build details
         let detailsHtml = '';
@@ -1604,8 +1524,6 @@
     });
 
     // ─── Init ─────────────────────────────────────────────────────────────────────
-    document.getElementById('app-version').textContent = APP_VERSION;
-
     function updateDateTime() {
       const now = new Date();
       const d = String(now.getDate()).padStart(2, '0');
